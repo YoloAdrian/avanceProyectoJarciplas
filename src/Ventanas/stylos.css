@@ -1,0 +1,184 @@
+/* FormularioUsuario.css */
+.formulario-usuario {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 400px;
+    margin: auto;
+    padding: 2rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .formulario-campo {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .formulario-campo label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .input-texto, .input-select {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border 0.3s ease;
+  }
+  
+  .input-texto:focus, .input-select:focus {
+    border-color: #007BFF;
+    outline: none;
+  }
+  
+  .formulario-botones {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15%;
+  }
+  
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-right: 2%;
+  }
+  
+  .guardar {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .cancelar {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .guardar:hover {
+    background-color: #218838;
+  }
+  
+  .cancelar:hover {
+    background-color: #c82333;
+  }
+  
+  .error {
+    color: red;
+    font-weight: bold;
+  }
+
+/*stylos login*/
+.formulario-login {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 400px;
+    margin: auto;
+    padding: 2rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    margin-top: 100px;
+  }
+  
+  .formulario-campo {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .formulario-campo label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .input-texto {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border 0.3s ease;
+  }
+  .input-contraseña{
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border 0.3s ease;
+    width: 100%;
+  }
+  .input-texto:focus {
+    border-color: #007BFF;
+    outline: none;
+  }
+  
+  .formulario-botones {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #007BFF;
+    color: white;
+
+  }
+
+  .input-pass{
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border 0.3s ease;
+    width: 95%;
+  }
+  
+  .btn:hover {
+    background-color: #0056b3;
+  }
+
+  .formulario-recuperar {
+    margin-top: 10px;
+  }
+  
+  .formulario-recuperar a {
+    color: #0e3bdf;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+  }
+  
+  .formulario-recuperar a:hover {
+    color: #205225;
+  }
+  
+  .formulario-campo {
+    position: relative;
+  }
+  
+  .btn-mostrar {
+    position: absolute;
+    right: 10px; /* Ajusta según tu diseño */
+    top: 75%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1rem; /* Ajusta el tamaño del ícono */
+  }
+  
+  .barra-fuerza {
+    height: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    transition: width 0.3s ease;
+  }
+  
