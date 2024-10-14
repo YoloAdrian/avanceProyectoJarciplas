@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'; 
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import './stylos.css';
 
 const Login = () => {
@@ -9,10 +10,16 @@ const Login = () => {
     correo: '',
     contraseña: ''
   });
-  const [mostrarContraseña, setMostrarContraseña] = useState(false); 
+  const [mostrarContraseña, setMostrarContraseña] = useState(false);
   const [error, setError] = useState('');
+  const [intentos, setIntentos] = useState(0);
+  const [cuentaBloqueada, setCuentaBloqueada] = useState(false);
+  const [tiempoBloqueo, setTiempoBloqueo] = useState(300); // Tiempo de bloqueo en segundos (5 minutos)
+  const [captchaToken, setCaptchaToken] = useState(null); // Token de reCAPTCHA
   const navigate = useNavigate();
   const { iniciarSesionComoUsuario, iniciarSesionComoAdmin } = useAuth();
+
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const manejarCambio = (e) => {
     const { name, value } = e.target;
@@ -22,9 +29,41 @@ const Login = () => {
   const manejarSubmit = async (e) => {
     e.preventDefault();
 
+    if (cuentaBloqueada) {
+      setError(`Tu cuenta está bloqueada. Intenta de nuevo en ${tiempoBloqueo} segundos.`);
+      return;
+    }
+
+    // Ejecutar reCAPTCHA
+    if (executeRecaptcha) {
+      const token = await executeRecaptcha('login'); // 'login' es el nombre de la acción
+      setCaptchaToken(token); // Guardar el token
+    } else {
+      setError('Error al cargar reCAPTCHA.');
+      return;
+    }
+
     try {
+      // Verificar el token de reCAPTCHA en el backend
+      const captchaResponse = await fetch('http://localhost:3001/api/verificar_captcha', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ captchaToken }),
+      });
+
+      const captchaData = await captchaResponse.json();
+
+      if (!captchaData.success) {
+        setError('Verificación de reCAPTCHA fallida. Inténtalo de nuevo.');
+        return;
+      }
+
+      // Continuar con la verificación de usuario...
       const respuestaUsuario = await fetch('http://localhost:3001/api/usuarios');
       const usuarios = await respuestaUsuario.json();
+      console.log(usuarios);
 
       const usuarioEncontrado = usuarios.find(usuario => 
         usuario.Correo === formulario.correo && usuario.Contraseña === formulario.contraseña
@@ -38,9 +77,10 @@ const Login = () => {
 
       const respuestaTrabajador = await fetch('http://localhost:3001/api/trabajadores');
       const trabajadores = await respuestaTrabajador.json();
+      console.log(trabajadores);
 
       const trabajadorEncontrado = trabajadores.find(trabajador => 
-        trabajador.Correo === formulario.correo && trabajador.contraseña === formulario.contraseña
+        trabajador.Correo === formulario.correo && trabajador.Contraseña === formulario.contraseña
       );
 
       if (trabajadorEncontrado) {
@@ -49,10 +89,41 @@ const Login = () => {
         return;
       }
 
-      setError('Contraseña o correo incorrectos intenta de nuevo');
+      // Incrementar el contador de intentos fallidos
+      setIntentos(prevIntentos => {
+        const nuevosIntentos = prevIntentos + 1;
+        if (nuevosIntentos >= 5) {
+          setCuentaBloqueada(true); // Bloquear la cuenta después de 5 intentos
+          setTiempoBloqueo(300); // Establecer el tiempo de bloqueo en 300 segundos (5 minutos)
+          setError('Tu cuenta ha sido bloqueada debido a múltiples intentos fallidos. Intenta más tarde.');
+        } else {
+          setError('Contraseña o correo incorrectos. Intenta de nuevo.');
+        }
+        return nuevosIntentos;
+      });
     } catch (err) {
-      setError('Error en la conexión');
+      setError('Error en la conexión example');
     }
+  };
+
+  useEffect(() => {
+    if (cuentaBloqueada && tiempoBloqueo > 0) {
+      const timer = setInterval(() => {
+        setTiempoBloqueo(prev => prev - 1);
+      }, 1000);
+
+      return () => clearInterval(timer);
+    } else if (tiempoBloqueo === 0) {
+      setCuentaBloqueada(false);
+      setError('Puedes intentar iniciar sesión de nuevo.');
+      setIntentos(0); // Reiniciar los intentos
+    }
+  }, [cuentaBloqueada, tiempoBloqueo]);
+
+  const formatoTiempo = (tiempo) => {
+    const minutos = Math.floor(tiempo / 60);
+    const segundos = tiempo % 60;
+    return `${minutos < 10 ? '0' : ''}${minutos}:${segundos < 10 ? '0' : ''}${segundos}`;
   };
 
   return (
@@ -98,6 +169,10 @@ const Login = () => {
 
       {error && <p className="error">{error}</p>}
 
+      {cuentaBloqueada && (
+        <p className="cronometro">Tiempo restante: {formatoTiempo(tiempoBloqueo)}</p>
+      )}
+
       <div className="formulario-botones">
         <button className="btn iniciar-sesion" type="submit">Iniciar Sesión</button>
       </div>
@@ -105,4 +180,12 @@ const Login = () => {
   );
 };
 
-export default Login;
+const App = () => {
+  return (
+    <GoogleReCaptchaProvider reCaptchaKey="6Ld-o2AqAAAAAN3ox0SJCvc7JOAzTap3eaosiy4p">
+      <Login />
+    </GoogleReCaptchaProvider>
+  );
+};
+
+export default App;

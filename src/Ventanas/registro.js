@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './stylos.css';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'; 
+import sha1 from 'sha1'; // Asegúrate de instalar esta librería
 
 const Registro = () => {
   const [formulario, setFormulario] = useState({
@@ -19,6 +20,9 @@ const Registro = () => {
   const [mostrarContraseña, setMostrarContraseña] = useState(false);
   const [mostrarConfirmarContraseña, setMostrarConfirmarContraseña] = useState(false);
   const [fuerzaContraseña, setFuerzaContraseña] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMensaje, setModalMensaje] = useState('');
+
 
   const manejarCambio = (e) => {
     const { name, value } = e.target;
@@ -33,25 +37,86 @@ const Registro = () => {
 
   const evaluarFuerzaContraseña = (contraseña) => {
     let fuerza = 0;
-    if (contraseña.length >= 12 && contraseña.length < 14) fuerza = 1; 
-    if (contraseña.length >= 14 && contraseña.length < 18) fuerza = 2; 
-    if (contraseña.length >= 18 && /^[A-Za-z0-9]*$/.test(contraseña)) fuerza = 3; 
-    if (contraseña.length >= 18 && /[^A-Za-z0-9]/.test(contraseña)) fuerza = 4; 
+
+    // Evitar contraseñas comunes
+    const patronesComunes = ['12345', 'password', 'abcdef', 'qwerty'];
+    const tienePatronComun = patronesComunes.some((patron) =>
+      contraseña.toLowerCase().includes(patron)
+    );
+
+    if (tienePatronComun) return 0;
+
+    // Verificar secuencias prohibidas
+    if (contieneSecuencia(contraseña)) return 0;
+
+    // Verificar longitud mínima
+    if (contraseña.length >= 12) fuerza += 1;
+
+    // Verificar complejidad
+    if (/[A-Z]/.test(contraseña)) fuerza += 1; // Al menos una mayúscula
+    if (/[a-z]/.test(contraseña)) fuerza += 1; // Al menos una minúscula
+    if (/\d/.test(contraseña)) fuerza += 1; // Al menos un número
+    if (/[^A-Za-z0-9]/.test(contraseña)) fuerza += 1; // Al menos un símbolo
+
     return fuerza;
+  };
+
+  const contieneSecuencia = (contraseña) => {
+    // Comprobar secuencias numéricas y alfabéticas
+    const secuenciasAlfabeticas = [
+      'abcdefghijklmnopqrstuvwxyz',
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      '0123456789'
+    ];
+
+    for (let i = 0; i < secuenciasAlfabeticas.length; i++) {
+      for (let j = 0; j < secuenciasAlfabeticas[i].length - 2; j++) {
+        const secuencia = secuenciasAlfabeticas[i].slice(j, j + 3);
+        if (contraseña.includes(secuencia) || contraseña.includes(secuencia.split('').reverse().join(''))) {
+          return true; // Contiene una secuencia prohibida
+        }
+      }
+    }
+
+    return false; // No contiene secuencias prohibidas
+  };
+
+  const verificarContraseñaFiltrada = async (contraseña) => {
+    const hashContraseña = sha1(contraseña); 
+    const prefix = hashContraseña.slice(0, 5); 
+    const suffix = hashContraseña.slice(5); 
+
+    try {
+      const respuesta = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
+      const textoRespuesta = await respuesta.text();
+      const haSidoFiltrada = textoRespuesta.split('\n').some((linea) => {
+        const [hashSuffix] = linea.split(':');
+        return hashSuffix.toLowerCase() === suffix.toLowerCase();
+      });
+
+      return haSidoFiltrada;
+    } catch (error) {
+      console.error('Error al verificar contraseña filtrada:', error);
+      return false;
+    }
   };
 
   const manejarGuardar = async (e) => {
     e.preventDefault();
-
-    // Validar que las contraseñas coincidan
+  
     if (formulario.contraseña !== formulario.confirmar_contraseña) {
       setErrorContraseña('Las contraseñas no coinciden');
       return;
     }
-
+  
+    const haSidoFiltrada = await verificarContraseñaFiltrada(formulario.contraseña);
+    if (haSidoFiltrada) {
+      setErrorContraseña('Esta contraseña no es segura. Elige otra.');
+      return;
+    }
+  
     setErrorContraseña('');
-    
-    // Preparar los datos para enviar al backend
+  
     const datosUsuario = {
       Nombre: formulario.nombre,
       Apellido_Paterno: formulario.apellido_paterno,
@@ -62,7 +127,7 @@ const Registro = () => {
       Telefono: formulario.telefono,
       Contraseña: formulario.contraseña,
     };
-
+  
     try {
       const respuesta = await fetch('http://localhost:3001/api/usuarios', {
         method: 'POST',
@@ -71,32 +136,36 @@ const Registro = () => {
         },
         body: JSON.stringify(datosUsuario),
       });
-
+  
       if (!respuesta.ok) {
         throw new Error('Error al guardar el usuario');
       }
-
+  
       const nuevoUsuario = await respuesta.json();
       console.log('Usuario guardado:', nuevoUsuario);
-
-      // Limpiar el formulario después de guardar
-      setFormulario({
-        nombre: '',
-        apellido_paterno: '',
-        apellido_materno: '',
-        edad: '',
-        genero: '',
-        correo: '',
-        telefono: '',
-        contraseña: '',
-        confirmar_contraseña: '',
-      });
-      setFuerzaContraseña(0); // Limpiar la barra de fuerza de contraseña
+      setModalMensaje('Usuario guardado exitosamente.');
     } catch (error) {
       console.error('Error en la solicitud:', error);
-      setErrorContraseña('Error al guardar el usuario. Intente de nuevo.');
+      setModalMensaje('Error al guardar el usuario. Intente de nuevo.');
+    } finally {
+      setModalVisible(true); // Mostrar el modal
     }
+  
+    // Restablecer el formulario
+    setFormulario({
+      nombre: '',
+      apellido_paterno: '',
+      apellido_materno: '',
+      edad: '',
+      genero: '',
+      correo: '',
+      telefono: '',
+      contraseña: '',
+      confirmar_contraseña: '',
+    });
+    setFuerzaContraseña(0);
   };
+  
 
   const manejarCancelar = () => {
     setFormulario({
@@ -111,8 +180,22 @@ const Registro = () => {
       confirmar_contraseña: '',
     });
     setErrorContraseña('');
-    setFuerzaContraseña(0); 
+    setFuerzaContraseña(0);
   };
+
+  const Modal = ({ visible, mensaje, onClose }) => {
+    if (!visible) return null;
+  
+    return (
+      <div className="modal">
+        <div className="modal-contenido">
+          <p>{mensaje}</p>
+          <button onClick={onClose}>Cerrar</button>
+        </div>
+      </div>
+    );
+  };
+  
 
   return (
     <form className="formulario-usuario" onSubmit={manejarGuardar} autoComplete="off">
@@ -139,8 +222,6 @@ const Registro = () => {
           value={formulario.apellido_paterno}
           onChange={manejarCambio}
           required
-          minLength="3"
-          maxLength="60"
         />
       </div>
 
@@ -153,8 +234,6 @@ const Registro = () => {
           value={formulario.apellido_materno}
           onChange={manejarCambio}
           required
-          minLength="3"
-          maxLength="60"
         />
       </div>
 
@@ -168,7 +247,7 @@ const Registro = () => {
           onChange={manejarCambio}
           required
           min="18"
-          max="100"
+          max="99"
         />
       </div>
 
@@ -181,10 +260,10 @@ const Registro = () => {
           onChange={manejarCambio}
           required
         >
-          <option value="">Seleccione una opción</option>
-          <option value="Masculino">Masculino</option>
-          <option value="Femenino">Femenino</option>
-          <option value="Otro">Otro</option>
+          <option value="">Seleccionar</option>
+          <option value="masculino">Masculino</option>
+          <option value="femenino">Femenino</option>
+          <option value="otro">Otro</option>
         </select>
       </div>
 
@@ -197,8 +276,6 @@ const Registro = () => {
           value={formulario.correo}
           onChange={manejarCambio}
           required
-          minLength="15"
-          maxLength="60"
         />
       </div>
 
@@ -211,8 +288,7 @@ const Registro = () => {
           value={formulario.telefono}
           onChange={manejarCambio}
           required
-          minLength="7"
-          maxLength="10"
+          pattern="[0-9]{10}"
         />
       </div>
 
@@ -220,66 +296,60 @@ const Registro = () => {
         <label>Contraseña:</label>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <input
-            className="input-contraseña" 
+            className="input-pass"
             type={mostrarContraseña ? 'text' : 'password'}
             name="contraseña"
             value={formulario.contraseña}
             onChange={manejarCambio}
             required
-            minLength="12"
+            minLength="8"
+            maxLength="20"
           />
-          <button 
-            type="button" 
-            className="btn-mostrar" 
+          <button
+            type="button"
             onClick={() => setMostrarContraseña(!mostrarContraseña)}
-            style={{ border: 'none', background: 'none', cursor: 'pointer' }}
+            className="boton-ver"
+            style={{ marginLeft: '10px' }}
           >
             {mostrarContraseña ? <AiFillEyeInvisible /> : <AiFillEye />}
           </button>
         </div>
+        <div className={`barra-fuerza fuerza-${fuerzaContraseña}`} />
       </div>
 
       <div className="formulario-campo">
         <label>Confirmar Contraseña:</label>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <input
-            className="input-contraseña" 
+            className="input-pass"
             type={mostrarConfirmarContraseña ? 'text' : 'password'}
             name="confirmar_contraseña"
             value={formulario.confirmar_contraseña}
             onChange={manejarCambio}
             required
-            minLength="12"
-            maxLength="18"
+            minLength="8"
+            maxLength="20"
           />
-          <button 
-            type="button" 
-            className="btn-mostrar" 
+          <button
+            type="button"
             onClick={() => setMostrarConfirmarContraseña(!mostrarConfirmarContraseña)}
-            style={{ border: 'none', background: 'none', cursor: 'pointer' }}
+            className="boton-ver"
+            style={{ marginLeft: '10px' }}
           >
             {mostrarConfirmarContraseña ? <AiFillEyeInvisible /> : <AiFillEye />}
           </button>
         </div>
       </div>
 
-      {/* Barra de fuerza de la contraseña */}
-      <div className="barra-fuerza" style={{ width: `${fuerzaContraseña * 20}%`, backgroundColor: 'green' }}></div>
-      {fuerzaContraseña === 0 && <p className="error">Contraseña muy débil</p>}
-      {fuerzaContraseña === 1 && <p>Contraseña débil</p>}
-      {fuerzaContraseña === 2 && <p>Contraseña media</p>}
-      {fuerzaContraseña === 3 && <p>Contraseña fuerte</p>}
-      {fuerzaContraseña === 4 && <p>Contraseña muy fuerte</p>}
-
       {errorContraseña && <p className="error">{errorContraseña}</p>}
 
       <div className="formulario-botones">
-        <button type="submit" className="btn">Guardar</button>
-        <button type="button" className="btn" onClick={manejarCancelar}>Cancelar</button>
+        <button type="submit" className="btn_guardar">Registrarse</button>
+        <button type="button" className="btn_cancelar" onClick={manejarCancelar}>Cancelar</button>
+        <Modal visible={modalVisible} mensaje={modalMensaje} onClose={() => setModalVisible(false)} />
       </div>
     </form>
   );
 };
 
 export default Registro;
-
