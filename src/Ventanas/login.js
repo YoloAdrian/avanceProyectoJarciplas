@@ -60,32 +60,41 @@ const Login = () => {
         return;
       }
 
-      // Continuar con la verificación de usuario...
-      const respuestaUsuario = await fetch('http://localhost:3001/api/usuarios');
-      const usuarios = await respuestaUsuario.json();
-      console.log(usuarios);
-
-      const usuarioEncontrado = usuarios.find(usuario => 
-        usuario.Correo === formulario.correo && usuario.Contraseña === formulario.contraseña
-      );
-
-      if (usuarioEncontrado) {
-        iniciarSesionComoUsuario();
-        navigate('/Usuarios');
+       // Intentar iniciar sesión como usuario
+       const respuestaUsuario = await fetch('http://localhost:3001/api/usuarios/iniciar_sesion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          Correo: formulario.correo,
+          Contraseña: formulario.contraseña,
+        }),
+      });
+  
+      if (respuestaUsuario.ok) {
+        const usuario = await respuestaUsuario.json();
+        iniciarSesionComoUsuario(); // Maneja la sesión como usuario
+        navigate('/Usuarios'); // Redirigir a la ruta de usuarios
         return;
       }
-
-      const respuestaTrabajador = await fetch('http://localhost:3001/api/trabajadores');
-      const trabajadores = await respuestaTrabajador.json();
-      console.log(trabajadores);
-
-      const trabajadorEncontrado = trabajadores.find(trabajador => 
-        trabajador.Correo === formulario.correo && trabajador.Contraseña === formulario.contraseña
-      );
-
-      if (trabajadorEncontrado) {
-        iniciarSesionComoAdmin();
-        navigate('/Admin');
+  
+      // Intentar iniciar sesión como trabajador
+      const respuestaTrabajador = await fetch('http://localhost:3001/api/trabajadores/iniciar_sesion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          Correo: formulario.correo,
+          Contraseña: formulario.contraseña,
+        }),
+      });
+  
+      if (respuestaTrabajador.ok) {
+        const trabajador = await respuestaTrabajador.json();
+        iniciarSesionComoAdmin(); // Maneja la sesión como trabajador
+        navigate('/Admin'); // Redirigir a la ruta de trabajadores
         return;
       }
 
