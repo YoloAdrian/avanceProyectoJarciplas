@@ -1,0 +1,84 @@
+.perfil-empresa-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .informacion-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .informacion-table th,
+  .informacion-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+  }
+  
+  .informacion-table th {
+    background-color: #273746 ;
+    color: white;
+    position: sticky;
+    top: 0; /* Para mantener el encabezado visible */
+    z-index: 10; /* Para asegurar que el encabezado se mantenga sobre otras filas */
+  }
+  
+
+  .input-informacion {
+    padding: 10px; 
+    border: 1px solid #808b96; 
+    border-radius: 4px; 
+    font-size: 16px; 
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .btn_borrar{
+    padding: 8px 12px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    background-color: #922b21 ;
+  }
+
+  .btn_guardar{
+    padding: 8px 12px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    background-color: #0b5345;
+  }
+
+  .btn_edit{
+    padding: 8px 12px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    background-color: rgb(56, 66, 247);
+  }
+  
+  .informacion-table tr:hover {
+    background-color: #3f84e517;
+  }
+  
+  @media (max-width: 768px) {
+    .informacion-table {
+      display: block;
+      overflow-x: auto;
+    }
+  
+    .informacion-table th,
+    .informacion-table td {
+      white-space: nowrap;
+    }
+  }
+  

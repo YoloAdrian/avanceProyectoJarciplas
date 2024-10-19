@@ -1,0 +1,223 @@
+.formulario-usuario {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 400px;
+  margin: auto;
+  padding: 2rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Agregar sombra */
+}
+
+.formulario-campo {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.5rem; /* Añadir margen superior para separación */
+}
+
+.input-texto, .input-select, .input_pass {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: border 0.3s ease; /* Transición solo en el borde */
+  outline: none; /* Eliminar el contorno */
+}
+
+/* Estilos para el estado enfocado */
+.input-texto:focus, .input-select:focus, .input_pass:focus {
+  border-color: #007BFF; /* Cambiar el color de borde al enfocar */
+}
+
+/* Estilo cuando no está enfocado */
+.input-texto:not(:focus), .input-select:not(:focus), .input_pass:not(:focus) {
+  border-color: #ccc; /* Borde menos destacado al no estar enfocado */
+}
+
+.barra-fuerza {
+  height: 10px;
+  border-radius: 5px;
+  margin-top: 0.5rem;
+  transition: width 0.3s ease;
+}
+
+.fuerza-0 { width: 10%; background-color: red; }
+.fuerza-1 { width: 25%; background-color: red; }
+.fuerza-2 { width: 50%; background-color: rgb(172, 112, 0); }
+.fuerza-3 { width: 75%; background-color: rgb(151, 151, 5); }
+.fuerza-4 { width: 90%; background-color: rgb(0, 246, 0); }
+.fuerza-5 { width: 100%; background-color: green; }
+
+.mensaje-fuerza {
+  font-size: 0.8rem;
+  color: #006aff;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-contenido {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para el modal */
+}
+
+.formulario-campo-botones {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.btn_guardar, .btn_cancelar {
+  padding: 0.75rem 1.5rem; 
+  font-size: 1rem; 
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  flex: 1;
+  margin: 0 0.5rem; 
+  transition: background-color 0.3s; 
+}
+
+.btn_guardar {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn_cancelar {
+  background-color: #dc3545; 
+  color: white;
+}
+
+.btn_guardar:hover {
+  background-color: #218838;
+}
+
+.btn_cancelar:hover {
+  background-color: #c82333; 
+}
+
+
+/*stylos login*/
+.formulario-login {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 400px;
+    margin: auto;
+    padding: 2rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    margin-top: 100px;
+  }
+  
+  .formulario-campo {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .formulario-campo label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .input-texto {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border 0.3s ease;
+  }
+  .input-contraseña{
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border 0.3s ease;
+    width: 100%;
+  }
+  .input-texto:focus {
+    border-color: #007BFF;
+    outline: none;
+  }
+  
+  .formulario-botones {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #007BFF;
+    color: white;
+
+  }
+
+  .input-pass{
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border 0.3s ease;
+    width: 95%;
+  }
+  
+  .btn:hover {
+    background-color: #0056b3;
+  }
+
+  .formulario-recuperar {
+    margin-top: 10px;
+  }
+  
+  .formulario-recuperar a {
+    color: #0e3bdf;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+  }
+  
+  .formulario-recuperar a:hover {
+    color: #205225;
+  }
+  
+  .formulario-campo {
+    position: relative;
+  }
+  
+  .btn-mostrar {
+    position: absolute;
+    right: 10px; /* Ajusta según tu diseño */
+    top: 75%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1rem; /* Ajusta el tamaño del ícono */
+  }
+  
+  .barra-fuerza {
+    height: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    transition: width 0.3s ease;
+  }
+  
