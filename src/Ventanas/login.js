@@ -14,18 +14,35 @@ const Login = () => {
   const [error, setError] = useState('');
   const [intentos, setIntentos] = useState(0);
   const [cuentaBloqueada, setCuentaBloqueada] = useState(false);
-  const [tiempoBloqueo, setTiempoBloqueo] = useState(300); // Tiempo de bloqueo en segundos (5 minutos)
+  const [tiempoBloqueo, setTiempoBloqueo] = useState(300); 
   const [captchaToken, setCaptchaToken] = useState(null); // Token de reCAPTCHA
   const navigate = useNavigate();
   const { iniciarSesionComoUsuario, iniciarSesionComoAdmin } = useAuth();
 
   const { executeRecaptcha } = useGoogleReCaptcha();
-
   const manejarCambio = (e) => {
     const { name, value } = e.target;
-    setFormulario({ ...formulario, [name]: value });
+  
+    // Definir listas blancas
+    const regexCorreo = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/; 
+    const regexContraseña = /^[\w@#%&*+=-]{8,20}$/; 
+  
+    // Actualizar el estado sin bloquear la entrada
+    setFormulario((prevFormulario) => ({
+      ...prevFormulario,
+      [name]: value,
+    }));
+  
+    // Validar según el campo y mostrar errores
+    if (name === 'correo' && value && !regexCorreo.test(value)) {
+      setError('Correo electrónico no válido.');
+    } else if (name === 'contraseña' && value && !regexContraseña.test(value)) {
+      setError('El formato de contraseña no coincide');
+    } else {
+      setError(''); 
+    }
   };
-
+  
   const manejarSubmit = async (e) => {
     e.preventDefault();
 
@@ -36,15 +53,15 @@ const Login = () => {
 
     // Ejecutar reCAPTCHA
     if (executeRecaptcha) {
-      const token = await executeRecaptcha('login'); // 'login' es el nombre de la acción
-      setCaptchaToken(token); // Guardar el token
+      const token = await executeRecaptcha('login'); 
+      setCaptchaToken(token); 
     } else {
       setError('Error al cargar reCAPTCHA.');
       return;
     }
 
     try {
-      // Verificar el token de reCAPTCHA en el backend
+      // Verificar el token de reCAPTCHA 
       const captchaResponse = await fetch('http://localhost:3001/api/verificar_captcha', {
         method: 'POST',
         headers: {
@@ -60,7 +77,7 @@ const Login = () => {
         return;
       }
 
-       // Intentar iniciar sesión como usuario
+       // iniciar sesión como usuario
        const respuestaUsuario = await fetch('http://localhost:3001/api/usuarios/iniciar_sesion', {
         method: 'POST',
         headers: {
@@ -74,12 +91,12 @@ const Login = () => {
   
       if (respuestaUsuario.ok) {
         const usuario = await respuestaUsuario.json();
-        iniciarSesionComoUsuario(); // Maneja la sesión como usuario
-        navigate('/Usuarios'); // Redirigir a la ruta de usuarios
+        iniciarSesionComoUsuario(); 
+        navigate('/Usuarios'); 
         return;
       }
   
-      // Intentar iniciar sesión como trabajador
+      //iniciar sesión como trabajador
       const respuestaTrabajador = await fetch('http://localhost:3001/api/trabajadores/iniciar_sesion', {
         method: 'POST',
         headers: {
@@ -93,17 +110,17 @@ const Login = () => {
   
       if (respuestaTrabajador.ok) {
         const trabajador = await respuestaTrabajador.json();
-        iniciarSesionComoAdmin(); // Maneja la sesión como trabajador
-        navigate('/Admin'); // Redirigir a la ruta de trabajadores
+        iniciarSesionComoAdmin(); 
+        navigate('/Admin'); 
         return;
       }
 
-      // Incrementar el contador de intentos fallidos
+      
       setIntentos(prevIntentos => {
         const nuevosIntentos = prevIntentos + 1;
         if (nuevosIntentos >= 5) {
-          setCuentaBloqueada(true); // Bloquear la cuenta después de 5 intentos
-          setTiempoBloqueo(300); // Establecer el tiempo de bloqueo en 300 segundos (5 minutos)
+          setCuentaBloqueada(true); 
+          setTiempoBloqueo(300);
           setError('Tu cuenta ha sido bloqueada debido a múltiples intentos fallidos. Intenta más tarde.');
         } else {
           setError('Contraseña o correo incorrectos. Intenta de nuevo.');
@@ -125,7 +142,7 @@ const Login = () => {
     } else if (tiempoBloqueo === 0) {
       setCuentaBloqueada(false);
       setError('Puedes intentar iniciar sesión de nuevo.');
-      setIntentos(0); // Reiniciar los intentos
+      setIntentos(0); 
     }
   }, [cuentaBloqueada, tiempoBloqueo]);
 
@@ -179,7 +196,7 @@ const Login = () => {
       {error && <p className="error">{error}</p>}
 
       {cuentaBloqueada && (
-        <p className="cronometro">Tiempo restante: {formatoTiempo(tiempoBloqueo)}</p>
+        <p> </p>
       )}
 
       <div className="formulario-botones">

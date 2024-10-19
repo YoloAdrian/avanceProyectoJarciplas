@@ -16,29 +16,107 @@ const Registro = () => {
     confirmar_contraseña: '',
   });
 
+
+
+  const [errores, setErrores] = useState({});
   const [errorContraseña, setErrorContraseña] = useState('');
+  const [errorInput, setErrorInput] = useState('');
   const [mostrarContraseña, setMostrarContraseña] = useState(false);
   const [mostrarConfirmarContraseña, setMostrarConfirmarContraseña] = useState(false);
   const [fuerzaContraseña, setFuerzaContraseña] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMensaje, setModalMensaje] = useState('');
+  const [mensajeContraseña, setMensajeContraseña] = useState('');
+
 
 
   const manejarCambio = (e) => {
     const { name, value } = e.target;
     setFormulario({ ...formulario, [name]: value });
 
-    // Evaluar la fuerza de la contraseña
     if (name === 'contraseña') {
       const fuerza = evaluarFuerzaContraseña(value);
       setFuerzaContraseña(fuerza);
+
+
+      
+      // Actualizar mensaje de contraseña
+      if (fuerza === 0) {
+        setMensajeContraseña('Contraseña muy débil. Evita patrones comunes o secuencias.');
+      } else if (fuerza <= 2) {
+        setMensajeContraseña('Contraseña débil.');
+      } else if (fuerza === 3) {
+        setMensajeContraseña('Contraseña moderada.');
+      } else if (fuerza === 4) {
+        setMensajeContraseña('Contraseña fuerte.');
+      }
+    }
+
+    if (name !== 'genero' && !validarEntrada(name, value)) {
+      setErrores({ ...errores, [name]: `El formato no coincide, verifique sus datos` });
+    } else {
+      const nuevosErrores = { ...errores };
+      delete nuevosErrores[name];
+      setErrores(nuevosErrores);
+    }
+
+    // Validar que el campo de género tenga un valor seleccionado
+    if (name === 'genero') {
+      if (value === '') {
+        setErrores((prev) => ({ ...prev, genero: 'Por favor, seleccione un género.' }));
+      } else {
+        const nuevosErrores = { ...errores };
+        delete nuevosErrores.genero;
+        setErrores(nuevosErrores);
+      }
     }
   };
+
+  
+
+  const validarEntrada = (campo, valor) => {
+    const regexValidos = {
+      nombre: /^[a-zA-ZÀ-ÿ\s]+$/,
+      apellido_paterno: /^[a-zA-ZÀ-ÿ\s]+$/,
+      apellido_materno: /^[a-zA-ZÀ-ÿ\s]+$/,
+      correo: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+      telefono: /^[0-9]{10}$/, 
+      edad: /^[0-9]+$/, 
+      contraseña: /^[\w@#%&*+=-]{8,20}$/,
+      confirmar_contraseña: /^[\w@#%&*+=-]{8,20}$/,
+    };
+
+    return regexValidos[campo]?.test(valor);
+  };
+
+  const validarCampo = (nombre, valor) => {
+    let erroresActualizados = { ...errores };
+  
+    if (nombre === 'nombre' || nombre === 'apellido_paterno' || nombre === 'apellido_materno') {
+      if (!/^[a-zA-Z\s]+$/.test(valor)) {
+        erroresActualizados[nombre] = 'Solo se permiten letras.';
+      } else {
+        delete erroresActualizados[nombre];
+      }
+    }
+  
+    if (nombre === 'telefono') {
+      if (!/^\d+$/.test(valor)) {
+        erroresActualizados[nombre] = 'Solo se permiten números.';
+      } else {
+        delete erroresActualizados[nombre];
+      }
+    }
+  
+    setErrores(erroresActualizados);
+  };
+
+  
 
   const evaluarFuerzaContraseña = (contraseña) => {
     let fuerza = 0;
 
-    // Evitar contraseñas comunes
+    
     const patronesComunes = ['12345', 'password', 'abcdef', 'qwerty'];
     const tienePatronComun = patronesComunes.some((patron) =>
       contraseña.toLowerCase().includes(patron)
@@ -53,16 +131,16 @@ const Registro = () => {
     if (contraseña.length >= 12) fuerza += 1;
 
     // Verificar complejidad
-    if (/[A-Z]/.test(contraseña)) fuerza += 1; // Al menos una mayúscula
-    if (/[a-z]/.test(contraseña)) fuerza += 1; // Al menos una minúscula
-    if (/\d/.test(contraseña)) fuerza += 1; // Al menos un número
-    if (/[^A-Za-z0-9]/.test(contraseña)) fuerza += 1; // Al menos un símbolo
+    if (/[A-Z]/.test(contraseña)) fuerza += 1; 
+    if (/[a-z]/.test(contraseña)) fuerza += 1;
+    if (/\d/.test(contraseña)) fuerza += 1;
+    if (/[^A-Za-z0-9]/.test(contraseña)) fuerza += 1; 
 
     return fuerza;
   };
 
   const contieneSecuencia = (contraseña) => {
-    // Comprobar secuencias numéricas y alfabéticas
+    
     const secuenciasAlfabeticas = [
       'abcdefghijklmnopqrstuvwxyz',
       'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
@@ -73,12 +151,12 @@ const Registro = () => {
       for (let j = 0; j < secuenciasAlfabeticas[i].length - 2; j++) {
         const secuencia = secuenciasAlfabeticas[i].slice(j, j + 3);
         if (contraseña.includes(secuencia) || contraseña.includes(secuencia.split('').reverse().join(''))) {
-          return true; // Contiene una secuencia prohibida
+          return true; 
         }
       }
     }
 
-    return false; // No contiene secuencias prohibidas
+    return false; 
   };
 
   const verificarContraseñaFiltrada = async (contraseña) => {
@@ -101,8 +179,21 @@ const Registro = () => {
     }
   };
 
+  
+
   const manejarGuardar = async (e) => {
     e.preventDefault();
+
+    if (Object.keys(errores).length > 0) {
+      // Construir un mensaje con los errores
+      const mensajesErrores = Object.entries(errores)
+          .map(([campo, mensaje]) => `${campo}: ${mensaje}`)
+          .join('\n');
+  
+      setModalMensaje(`Error: algunos campos son incorrectos`);
+      setModalVisible(true);
+      return;
+  }
   
     if (formulario.contraseña !== formulario.confirmar_contraseña) {
       setErrorContraseña('Las contraseñas no coinciden');
@@ -164,6 +255,7 @@ const Registro = () => {
       confirmar_contraseña: '',
     });
     setFuerzaContraseña(0);
+    setMensajeContraseña('');
   };
   
 
@@ -211,6 +303,7 @@ const Registro = () => {
           minLength="3"
           maxLength="60"
         />
+        {errores.nombre && <p className="error_men">{errores.nombre}</p>}
       </div>
 
       <div className="formulario-campo">
@@ -222,7 +315,10 @@ const Registro = () => {
           value={formulario.apellido_paterno}
           onChange={manejarCambio}
           required
+          minLength="3"
+          maxLength="30"
         />
+        {errores.apellido_paterno && <p className="error_men">{errores.apellido_paterno}</p>}
       </div>
 
       <div className="formulario-campo">
@@ -234,7 +330,10 @@ const Registro = () => {
           value={formulario.apellido_materno}
           onChange={manejarCambio}
           required
+          minLength="3"
+          maxLength="30"
         />
+        {errores.apellido_materno && <p className="error_men">{errores.apellido_materno}</p>}
       </div>
 
       <div className="formulario-campo">
@@ -290,6 +389,7 @@ const Registro = () => {
           required
           pattern="[0-9]{10}"
         />
+        {errores.telefono && <p className="error">{errores.telefono}</p>}
       </div>
 
       <div className="formulario-campo">
@@ -314,6 +414,7 @@ const Registro = () => {
             {mostrarContraseña ? <AiFillEyeInvisible /> : <AiFillEye />}
           </button>
         </div>
+        <p>{mensajeContraseña}</p>
         <div className={`barra-fuerza fuerza-${fuerzaContraseña}`} />
       </div>
 
@@ -342,7 +443,7 @@ const Registro = () => {
       </div>
 
       {errorContraseña && <p className="error">{errorContraseña}</p>}
-
+      
       <div className="formulario-botones">
         <button type="submit" className="btn_guardar">Registrarse</button>
         <button type="button" className="btn_cancelar" onClick={manejarCancelar}>Cancelar</button>

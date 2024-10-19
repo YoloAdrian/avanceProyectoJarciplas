@@ -110,7 +110,10 @@
   background-color: #c82333; 
 }
 
-
+.error_men{
+  color: #c82333;
+  text-align: center;
+}
 /*stylos login*/
 .formulario-login {
     display: flex;
