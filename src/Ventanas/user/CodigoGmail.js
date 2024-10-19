@@ -19,7 +19,7 @@ function CodigoGmail() {
 
   return (
     <div>
-      <h2>Enviar Código de Verificación</h2>
+      <h2>Enviar Código de Verificación :</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="email"
