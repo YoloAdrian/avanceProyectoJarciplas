@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
@@ -12,44 +12,35 @@ const Login = () => {
   });
   const [mostrarContraseña, setMostrarContraseña] = useState(false);
   const [error, setError] = useState('');
-  const [intentos, setIntentos] = useState(0);
-  const [cuentaBloqueada, setCuentaBloqueada] = useState(false);
-  const [tiempoBloqueo, setTiempoBloqueo] = useState(300); 
   const [captchaToken, setCaptchaToken] = useState(null); // Token de reCAPTCHA
   const navigate = useNavigate();
   const { iniciarSesionComoUsuario, iniciarSesionComoAdmin } = useAuth();
 
   const { executeRecaptcha } = useGoogleReCaptcha();
+
   const manejarCambio = (e) => {
     const { name, value } = e.target;
-  
+
     // Definir listas blancas
     const regexCorreo = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/; 
     const regexContraseña = /^[\w@#%&*+=-]{8,20}$/; 
-  
-    // Actualizar el estado sin bloquear la entrada
+
     setFormulario((prevFormulario) => ({
       ...prevFormulario,
       [name]: value,
     }));
-  
-    // Validar según el campo y mostrar errores
+
     if (name === 'correo' && value && !regexCorreo.test(value)) {
       setError('Correo electrónico no válido.');
     } else if (name === 'contraseña' && value && !regexContraseña.test(value)) {
       setError('El formato de contraseña no coincide');
     } else {
-      setError(''); 
+      setError('');
     }
   };
-  
+
   const manejarSubmit = async (e) => {
     e.preventDefault();
-
-    if (cuentaBloqueada) {
-      setError(`Tu cuenta está bloqueada. Intenta de nuevo en ${tiempoBloqueo} segundos.`);
-      return;
-    }
 
     // Ejecutar reCAPTCHA
     if (executeRecaptcha) {
@@ -77,8 +68,8 @@ const Login = () => {
         return;
       }
 
-       // iniciar sesión como usuario
-       const respuestaUsuario = await fetch('http://localhost:3001/api/usuarios/iniciar_sesion', {
+      // Iniciar sesión como usuario
+      const respuestaUsuario = await fetch('http://localhost:3001/api/usuarios/iniciar_sesion', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,15 +79,14 @@ const Login = () => {
           Contraseña: formulario.contraseña,
         }),
       });
-  
+
       if (respuestaUsuario.ok) {
-        const usuario = await respuestaUsuario.json();
-        iniciarSesionComoUsuario(); 
-        navigate('/Usuarios'); 
+        iniciarSesionComoUsuario();
+        navigate('/Usuarios');
         return;
       }
-  
-      //iniciar sesión como trabajador
+
+      // Iniciar sesión como trabajador
       const respuestaTrabajador = await fetch('http://localhost:3001/api/trabajadores/iniciar_sesion', {
         method: 'POST',
         headers: {
@@ -107,49 +97,17 @@ const Login = () => {
           Contraseña: formulario.contraseña,
         }),
       });
-  
+
       if (respuestaTrabajador.ok) {
-        const trabajador = await respuestaTrabajador.json();
-        iniciarSesionComoAdmin(); 
-        navigate('/Admin'); 
+        iniciarSesionComoAdmin();
+        navigate('/Admin');
         return;
       }
 
-      
-      setIntentos(prevIntentos => {
-        const nuevosIntentos = prevIntentos + 1;
-        if (nuevosIntentos >= 5) {
-          setCuentaBloqueada(true); 
-          setTiempoBloqueo(300);
-          setError('Tu cuenta ha sido bloqueada debido a múltiples intentos fallidos. Intenta más tarde.');
-        } else {
-          setError('Contraseña o correo incorrectos. Intenta de nuevo.');
-        }
-        return nuevosIntentos;
-      });
+      setError('Contraseña o correo incorrectos. Intenta de nuevo hols.');
     } catch (err) {
-      setError('Error en la conexión example');
+      setError('Error en la conexión.');
     }
-  };
-
-  useEffect(() => {
-    if (cuentaBloqueada && tiempoBloqueo > 0) {
-      const timer = setInterval(() => {
-        setTiempoBloqueo(prev => prev - 1);
-      }, 1000);
-
-      return () => clearInterval(timer);
-    } else if (tiempoBloqueo === 0) {
-      setCuentaBloqueada(false);
-      setError('Puedes intentar iniciar sesión de nuevo.');
-      setIntentos(0); 
-    }
-  }, [cuentaBloqueada, tiempoBloqueo]);
-
-  const formatoTiempo = (tiempo) => {
-    const minutos = Math.floor(tiempo / 60);
-    const segundos = tiempo % 60;
-    return `${minutos < 10 ? '0' : ''}${minutos}:${segundos < 10 ? '0' : ''}${segundos}`;
   };
 
   return (
@@ -184,7 +142,7 @@ const Login = () => {
             onClick={() => setMostrarContraseña(!mostrarContraseña)}
             style={{ border: 'none', background: 'none', cursor: 'pointer' }}
           >
-            {mostrarContraseña ? <AiFillEyeInvisible /> : <AiFillEye/>}
+            {mostrarContraseña ? <AiFillEyeInvisible /> : <AiFillEye />}
           </button>
         </div>
       </div>
@@ -194,10 +152,6 @@ const Login = () => {
       </div>
 
       {error && <p className="error">{error}</p>}
-
-      {cuentaBloqueada && (
-        <p> </p>
-      )}
 
       <div className="formulario-botones">
         <button className="btn iniciar-sesion" type="submit">Iniciar Sesión</button>
@@ -215,3 +169,4 @@ const App = () => {
 };
 
 export default App;
+

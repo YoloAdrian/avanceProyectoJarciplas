@@ -21,6 +21,7 @@ import AvisoDePrivacidad from './Ventanas/user/avisodePrivacidad';
 import AvisoIntegral from './Ventanas/user/avisoIntegral';
 import Mision from './Ventanas/user/mision';
 import Politicas from './Ventanas/user/Politicas';
+import Roles from './Ventanas/admin/roles';
 
 
 const App = () => {
@@ -47,6 +48,7 @@ const App = () => {
         <Route path="/AvisoIntegral" element={<AvisoIntegral />} />
         <Route path="/Mision" element={<Mision />} />
         <Route path="/Politicas" element={<Politicas />} />
+        <Route path="/Roles" element={<Roles />} />
       </Routes>
       {usuario === 'usuario' && <FooterUsuario />}
     </Router>

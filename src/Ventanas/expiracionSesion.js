@@ -1,18 +1,20 @@
-// ExpiracionSesion.js
 import { useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 
 const ExpiracionSesion = () => {
-  const { cerrarSesion } = useAuth(); // Aquí se puede usar
+  const { cerrarSesion } = useAuth();
+  const navigate = useNavigate(); // Inicializar useNavigate
 
   useEffect(() => {
-    const timeoutDuration = 120000; // 2 minutos
+    const timeoutDuration = 1200000; // 20 minutos
     let timeout;
 
     const resetTimer = () => {
       if (timeout) clearTimeout(timeout);
       timeout = setTimeout(() => {
         cerrarSesion(); // Cerrar sesión si el tiempo de inactividad se alcanza
+        navigate('/'); // Redirigir al inicio
       }, timeoutDuration);
     };
 
@@ -32,7 +34,7 @@ const ExpiracionSesion = () => {
       });
       clearTimeout(timeout);
     };
-  }, [cerrarSesion]);
+  }, [cerrarSesion, navigate]); // Añadir navigate a las dependencias
 
   return null; // No renderiza nada
 };

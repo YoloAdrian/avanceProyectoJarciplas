@@ -82,3 +82,78 @@
     }
   }
   
+
+
+/* Roles.css */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  
+}
+
+.roles-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.roles-tabla {
+  flex: 1;
+  margin: 10px;
+  border-radius: 8px; /* Esquinas redondeadas */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  background-color: #fff; /* Fondo blanco */
+  padding: 20px;
+}
+
+.roles-header {
+  text-align: center;
+  color: #333;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.roles-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.roles-row-header {
+  background-color: #007bff; /* Azul claro */
+  color: white;
+}
+
+.roles-th {
+  padding: 10px;
+  text-align: left;
+}
+
+.roles-td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd; /* Línea separadora */
+}
+
+.roles-paragraph {
+  margin: 0;
+}
+
+.roles-row:hover {
+  background-color: #f1f1f1; /* Color al pasar el ratón */
+}
+
+.roles-options-cell {
+  text-align: center;
+}
+
+.roles-button {
+  background-color: #28a745; /* Verde */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Transición suave */
+}
+
+.roles-button:hover {
+  background-color: #218838; /* Verde oscuro al pasar el ratón */
+}

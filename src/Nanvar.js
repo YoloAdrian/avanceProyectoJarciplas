@@ -34,6 +34,7 @@ const Navbar = () => {
           <>
             <li><Link to="/PerfilEmpresa">Perfil Empresa</Link></li>
             <li><Link to="/Productos">Productos</Link></li>
+            <li><Link to="/Roles"> Roles</Link></li>
             <li><button className="btncerr" onClick={handleCerrarSesion}>Cerrar Sesión</button></li>
           </>
         )}
