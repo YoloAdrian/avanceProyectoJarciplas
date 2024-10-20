@@ -157,3 +157,30 @@ body {
 .roles-button:hover {
   background-color: #218838; /* Verde oscuro al pasar el ratón */
 }
+
+
+.roles_opciones {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.roles_opciones:hover {
+  background-color: #eaeaea;
+}
+
+.roles_opciones:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.roles_opciones option {
+  padding: 8px;
+  background-color: #fff;
+  color: #333;
+}

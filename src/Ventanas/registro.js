@@ -210,7 +210,7 @@ const Registro = () => {
   
     const datosUsuario = {
       Nombre: formulario.nombre,
-      id_tipo_usuario: 3,
+      id_tipo_usuario: 2,
       Apellido_Paterno: formulario.apellido_paterno,
       Apellido_Materno: formulario.apellido_materno,
       Edad: formulario.edad,
