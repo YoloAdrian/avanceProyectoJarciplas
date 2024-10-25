@@ -1,3 +1,8 @@
+/* Formulario de usuario */
+body {
+  background: linear-gradient(90deg, #123f6b, #41b2d9);
+}
+
 .formulario-usuario {
   display: flex;
   flex-direction: column;
@@ -5,35 +10,39 @@
   max-width: 400px;
   margin: auto;
   padding: 2rem;
-  border: 1px solid #ccc;
+  border: 1px solid #000000;
   border-radius: 10px;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Agregar sombra */
+  background: linear-gradient(90deg, #91dde6, #86afcf, #aca7bb);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+}
+
+.grecaptcha-badge {
+  bottom: 80% !important;  /* Ajusta la distancia desde la parte inferior */ 
+  transform: scale(0.85);   /* Reduce el tamaño del logo si es necesario */
 }
 
 .formulario-campo {
   display: flex;
   flex-direction: column;
-  margin-top: 0.5rem; /* Añadir margen superior para separación */
+  margin-top: 0.5rem; /* Separación */
 }
 
 .input-texto, .input-select, .input_pass {
+  background-color: transparent;
   padding: 0.5rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #150f10;
   border-radius: 5px;
-  transition: border 0.3s ease; /* Transición solo en el borde */
-  outline: none; /* Eliminar el contorno */
+  transition: border 0.3s ease;
+  outline: none;
 }
 
-/* Estilos para el estado enfocado */
 .input-texto:focus, .input-select:focus, .input_pass:focus {
-  border-color: #007BFF; /* Cambiar el color de borde al enfocar */
+  border-color: #4aa130;
 }
 
-/* Estilo cuando no está enfocado */
-.input-texto:not(:focus), .input-select:not(:focus), .input_pass:not(:focus) {
-  border-color: #ccc; /* Borde menos destacado al no estar enfocado */
+.input-select:not(:focus) {
+  border-color: #0a0a0a;
 }
 
 .barra-fuerza {
@@ -72,7 +81,7 @@
   padding: 20px;
   border-radius: 8px;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para el modal */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .formulario-campo-botones {
@@ -81,7 +90,7 @@
   margin-top: 1rem;
 }
 
-.btn_guardar, .btn_cancelar {
+.btn_gdr, .btn_cnl {
   padding: 0.75rem 1.5rem; 
   font-size: 1rem; 
   border: none;
@@ -89,138 +98,254 @@
   cursor: pointer;
   flex: 1;
   margin: 0 0.5rem; 
-  transition: background-color 0.3s; 
+  transition: background-color 0.3s;
 }
 
-.btn_guardar {
-  background-color: #28a745;
+.btn_gdr {
+  background-color: #1f7934 ;
   color: white;
+  border: 1px solid #000000;
 }
 
-.btn_cancelar {
+.btn_cnl {
   background-color: #dc3545; 
   color: white;
+  border: 1px solid #000000;
 }
 
-.btn_guardar:hover {
-  background-color: #218838;
+.btn_gdr:hover, .btn_cnl:hover {
+  background-color: #056e94;
 }
 
-.btn_cancelar:hover {
-  background-color: #c82333; 
-}
-
-.error_men{
+.error_men {
   color: #c82333;
   text-align: center;
 }
-/*stylos login*/
+
+/* Formulario de login */
 .formulario-login {
-    display: flex;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 400px;
+  margin: auto;
+  padding: 2rem;
+  border: 1px solid #000000;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #91dde6, #86afcf, #aca7bb);
+  margin-top: 100px;
+}
+
+.formulario-campo label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.input-texto {
+  background-color: transparent;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #0b0b0b !important;
+  border-radius: 5px;
+  transition: border 0.3s ease;
+}
+
+.input-contraseña {
+  background-color: transparent;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #150f10;
+  border-radius: 5px;
+  transition: border 0.3s ease;
+  width: 100%;
+}
+
+.input-texto:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+.formulario-botones {
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: #08305c;
+  color: white;
+}
+
+.input-pass {
+  background-color: transparent;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #150f10;
+  border-radius: 5px;
+  transition: border 0.3s ease;
+  width: 95%;
+}
+
+.boton-ver {
+  background-color: white;
+  color: black;
+  border: 1px solid #150f10;
+}
+
+.btn:hover {
+  background-color: #3272b8;
+}
+
+.formulario-recuperar {
+  margin-top: 10px;
+}
+
+.formulario-recuperar a {
+  color: #151515;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.formulario-recuperar a:hover {
+  color: #7e0e0e;
+}
+
+.btn-mostrar {
+  position: absolute;
+  right: 10%; 
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: white;
+  color: black;
+  border: 1px solid #150f10;
+}
+
+.barra-fuerza {
+  height: 8px;
+  margin-top: 5px;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.codigo-qr {
+  text-align: center; /* Centrar el texto */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.5rem; /* Ajusta el margen superior si es necesario */
+}
+
+.codigo-qr img {
+  margin-top: 1rem; /* Añadir espacio entre el texto y la imagen */
+  max-width: 100%; /* Asegúrate de que la imagen sea responsiva */
+  height: auto;
+}
+
+/* Estilos para el contenedor general del panel */
+.panel-administrador {
+  background-color: #98acbc;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px; /* Cuadro más pequeño */
+  margin: 0 auto; /* Centrar el cuadro */
+  text-align: center;
+}
+
+/* Estilos para el título principal */
+.titulo-administrador {
+  font-size: 2rem;
+  color: #ffffff;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+/* Estilos para la descripción principal */
+.descripcion-administrador {
+  font-size: 1.2rem;
+  color: #000000;
+  margin-bottom: 20px;
+}
+
+/* Estilos para los títulos de las secciones */
+.titulo-seccion-administrador {
+  font-size: 1.5rem;
+  color: #502c2c;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+/* Estilos para los párrafos dentro de las secciones */
+.texto-administrador {
+  font-size: 1rem;
+  color: #000000;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+/* Media Queries para responsividad */
+@media (max-width: 768px) {
+  .formulario-usuario, .formulario-login {
+    max-width: 90%;
+    padding: 1.5rem;
+  }
+  .panel-administrador {
+    padding: 15px;
+    max-width: 90%; /* Ajustar el ancho en pantallas más pequeñas */
+  }
+  .titulo-administrador {
+    font-size: 1.8rem;
+  }
+  .descripcion-administrador {
+    font-size: 1.1rem;
+  }
+  .titulo-seccion-administrador {
+    font-size: 1.3rem;
+  }
+  .texto-administrador {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .formulario-usuario, .formulario-login {
+    max-width: 80%;
+    padding: 1rem;
+  }
+  .panel-administrador {
+    padding: 10px;
+    max-width: 100%; /* Para pantallas más pequeñas, ocupa todo el ancho */
+  }
+  .formulario-campo-botones {
     flex-direction: column;
-    gap: 1.5rem;
-    max-width: 400px;
-    margin: auto;
-    padding: 2rem;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-    margin-top: 100px;
   }
-  
-  .formulario-campo {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .formulario-campo label {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
-  
-  .input-texto {
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    transition: border 0.3s ease;
-  }
-  .input-contraseña{
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    transition: border 0.3s ease;
+  .btn_gdr, .btn_cnl {
+    margin-bottom: 1rem;
     width: 100%;
   }
-  .input-texto:focus {
-    border-color: #007BFF;
-    outline: none;
+  .titulo-administrador {
+    font-size: 1.5rem;
   }
-  
-  .formulario-botones {
-    display: flex;
-    justify-content: center;
-  }
-  
-  .btn {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 5px;
+  .descripcion-administrador {
     font-size: 1rem;
-    cursor: pointer;
-    background-color: #007BFF;
-    color: white;
-
   }
-
-  .input-pass{
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    transition: border 0.3s ease;
-    width: 95%;
+  .titulo-seccion-administrador {
+    font-size: 1.2rem;
   }
-  
-  .btn:hover {
-    background-color: #0056b3;
-  }
-
-  .formulario-recuperar {
-    margin-top: 10px;
-  }
-  
-  .formulario-recuperar a {
-    color: #0e3bdf;
-    text-decoration: none;
+  .texto-administrador {
     font-size: 0.9rem;
-    transition: color 0.3s ease;
   }
-  
-  .formulario-recuperar a:hover {
-    color: #205225;
+}
+
+@media (max-width: 480px) {
+  .input-texto, .input-contraseña, .input_pass {
+    font-size: 0.9rem;
   }
-  
-  .formulario-campo {
-    position: relative;
-  }
-  
-  .btn-mostrar {
-    position: absolute;
-    right: 10px; /* Ajusta según tu diseño */
-    top: 75%;
-    transform: translateY(-50%);
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 1rem; /* Ajusta el tamaño del ícono */
-  }
-  
-  .barra-fuerza {
-    height: 8px;
-    margin-top: 5px;
-    border-radius: 5px;
-    transition: width 0.3s ease;
-  }
-  
+}

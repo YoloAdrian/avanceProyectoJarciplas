@@ -43,7 +43,7 @@ const Login = () => {
 
   const manejarSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (executeRecaptcha) {
       const token = await executeRecaptcha('login');
       setCaptchaToken(token);
@@ -51,25 +51,25 @@ const Login = () => {
       setError('Error al cargar reCAPTCHA.');
       return;
     }
-
+  
     try {
-      const captchaResponse = await fetch('http://localhost:3001/api/verificar_captcha', {
+      const captchaResponse = await fetch('https://backendjarciplas.onrender.com/api/verificar_captcha', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ captchaToken }),
       });
-
+  
       const captchaData = await captchaResponse.json();
-
+  
       if (!captchaData.success) {
         setError('Verificación de reCAPTCHA fallida. Inténtalo de nuevo.');
         return;
       }
-
+  
       // Iniciar sesión como usuario
-      const respuestaUsuario = await fetch('http://localhost:3001/api/usuarios/iniciar_sesion', {
+      const respuestaUsuario = await fetch('https://backendjarciplas.onrender.com/api/usuarios/iniciar_sesion', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,34 +79,37 @@ const Login = () => {
           Contraseña: formulario.contraseña,
         }),
       });
-
+  
+      const datosUsuario = await respuestaUsuario.json();
+  
+      if (respuestaUsuario.status === 403) {
+        setError(datosUsuario.message); // Aquí mostramos el mensaje de cuenta bloqueada
+        return;
+      }
+  
       if (respuestaUsuario.ok) {
-        const usuarioData = await respuestaUsuario.json();
-        setUsuarioId(usuarioData.id_usuario);
-        console.log("ID de usuario:", usuarioData.id_usuario);
-
+        setUsuarioId(datosUsuario.id_usuario);
         setMfaRequired(true);
-
+  
         // Generar el código QR para MFA
-        const qrResponse = await fetch(`http://localhost:3001/api/usuarios/${usuarioData.id_usuario}/generar_mfa`, {
+        const qrResponse = await fetch(`https://backendjarciplas.onrender.com/api/usuarios/${datosUsuario.id_usuario}/generar_mfa`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
         });
-
+  
         if (qrResponse.ok) {
           const qrData = await qrResponse.json();
-          console.log("Datos QR (usuario):", qrData);
           setQrCode(qrData.qrCode);
         }
-
+  
         setError('Se requiere verificación MFA. Ingresa el token MFA.');
         return;
       }
-
+  
       // Iniciar sesión como trabajador
-      const respuestaTrabajador = await fetch('http://localhost:3001/api/trabajadores/iniciar_sesion', {
+      const respuestaTrabajador = await fetch('https://backendjarciplas.onrender.com/api/trabajadores/iniciar_sesion', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -116,44 +119,48 @@ const Login = () => {
           Contraseña: formulario.contraseña,
         }),
       });
-
+  
+      const datosTrabajador = await respuestaTrabajador.json();
+  
+      if (respuestaTrabajador.status === 403) {
+        setError(datosTrabajador.message); // Aquí mostramos el mensaje de cuenta bloqueada
+        return;
+      }
+  
       if (respuestaTrabajador.ok) {
-        const trabajadorData = await respuestaTrabajador.json();
-        setTrabajadorId(trabajadorData.id_trabajador);
-        console.log("ID de trabajador:", trabajadorData.id_trabajador);
-
+        setTrabajadorId(datosTrabajador.id_trabajador);
         setMfaRequired(true);
-
+  
         // Generar el código QR para MFA del trabajador
-        const qrResponse = await fetch(`http://localhost:3001/api/trabajadores/${trabajadorData.id_trabajador}/generar_mfa`, {
+        const qrResponse = await fetch(`https://backendjarciplas.onrender.com/api/trabajadores/${datosTrabajador.id_trabajador}/generar_mfa`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
         });
-
+  
         if (qrResponse.ok) {
           const qrData = await qrResponse.json();
-          console.log("Datos QR (trabajador):", qrData);
           setQrCode(qrData.qrCode);
         }
-
+  
         setError('Se requiere verificación MFA. Ingresa el token MFA.');
         return;
       }
-
+  
       setError('Contraseña o correo incorrectos. Intenta de nuevo.');
     } catch (err) {
       setError('Error en la conexión.');
     }
   };
+  
 
   const manejarTokenMFA = async (e) => {
     e.preventDefault();
     try {
       const endpoint = usuarioId 
-        ? `http://localhost:3001/api/usuarios/${usuarioId}/verificar_mfa`
-        : `http://localhost:3001/api/trabajadores/${trabajadorId}/verificar_mfa`;
+        ? `https://backendjarciplas.onrender.com/api/usuarios/${usuarioId}/verificar_mfa`
+        : `https://backendjarciplas.onrender.com/api/trabajadores/${trabajadorId}/verificar_mfa`;
 
       const respuestaMFA = await fetch(endpoint, {
         method: 'POST',
@@ -197,7 +204,7 @@ const Login = () => {
 
       <div className="formulario-campo">
         <label>Contraseña:</label>
-        <div className="input-con-ico">
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <input
             className="input-pass"
             type={mostrarContraseña ? 'text' : 'password'}
@@ -209,9 +216,9 @@ const Login = () => {
           />
           <button 
             type="button" 
-            className="btn-mostrar" 
+            className="boton-ver" 
             onClick={() => setMostrarContraseña(!mostrarContraseña)}
-            style={{ border: 'none', background: 'none', cursor: 'pointer' }}
+            style={{ marginLeft: '10px' }}
           >
             {mostrarContraseña ? <AiFillEyeInvisible /> : <AiFillEye />}
           </button>
@@ -238,9 +245,12 @@ const Login = () => {
         </>
       )}
 
-      <div className="formulario-recuperar">
-        <Link to="/RecuperarContraseña">¿Olvidaste tu contraseña?</Link>
-      </div>
+{!mfaRequired && (
+  <div className="formulario-recuperar">
+    <Link to="/RecuperarContraseña">¿Olvidaste tu contraseña?</Link>
+  </div>
+)}
+
 
       {error && <p className="error">{error}</p>}
 
@@ -261,4 +271,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default App;  

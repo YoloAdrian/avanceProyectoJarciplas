@@ -10,15 +10,15 @@ function Roles() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const trabajadoresResponse = await fetch('http://localhost:3001/api/trabajadores');
+        const trabajadoresResponse = await fetch('https://backendjarciplas.onrender.com/api/trabajadores');
         const trabajadoresData = await trabajadoresResponse.json();
         setTrabajadores(trabajadoresData);
 
-        const usuariosResponse = await fetch('http://localhost:3001/api/usuarios');
+        const usuariosResponse = await fetch('https://backendjarciplas.onrender.com/api/usuarios');
         const usuariosData = await usuariosResponse.json();
         setUsuarios(usuariosData);
 
-        const tiposResponse = await fetch('http://localhost:3001/api/tipos_usuarios');
+        const tiposResponse = await fetch('https://backendjarciplas.onrender.com/api/tipos_usuarios');
         const tiposData = await tiposResponse.json();
 
         const tiposMap = {};
@@ -39,7 +39,7 @@ function Roles() {
   const handleDelete = async (id) => {
     if (window.confirm("¿Estás seguro de que deseas eliminar este trabajador? Esta acción es irreversible.")) {
       try {
-        const response = await fetch(`http://localhost:3001/api/trabajadores/${id}`, {
+        const response = await fetch(`https://backendjarciplas.onrender.com/api/trabajadores/${id}`, {
           method: 'DELETE',
         });
 
@@ -59,7 +59,7 @@ function Roles() {
   const handleChangeRole = async (id, nuevoTipoUsuario) => {
     if (nuevoTipoUsuario) {
       try {
-        const response = await fetch(`http://localhost:3001/api/trabajadores/${id}/cambiar_rol`, {
+        const response = await fetch(`https://backendjarciplas.onrender.com/api/trabajadores/${id}/cambiar_rol`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ function Roles() {
   const handleChangeUserRole = async (id, nuevoTipoUsuario) => {
     if (nuevoTipoUsuario) {
       try {
-        const response = await fetch(`http://localhost:3001/api/usuarios/${id}/cambiar_rol`, {
+        const response = await fetch(`https://backendjarciplas.onrender.com/api/usuarios/${id}/cambiar_rol`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

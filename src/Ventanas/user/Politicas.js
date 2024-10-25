@@ -1,31 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import './stylos_user.css'; 
+import axios from 'axios';
 
-const InformacionGeneral = () => {
-  const [informacion, setInformacion] = useState('');
+function Politicas() {
+  const [politica, setPolitica] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchInformacion = async () => {
+    const fetchPoliticaVigente = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/informacion/2'); 
-        const data = await response.json();
-        setInformacion(data.informacion);
+        const response = await axios.get('https://backendjarciplas.onrender.com/api/politicas/vigente'); // Asegúrate de que la ruta sea correcta
+        setPolitica(response.data);
       } catch (error) {
-        console.error('Error al obtener la información:', error);
+        setError('Error al obtener la política vigente');
+        console.error(error);
       }
     };
 
-    fetchInformacion();
+    fetchPoliticaVigente();
   }, []);
 
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (!politica) {
+    return <div>No hay políticas vigentes disponibles.</div>;
+  }
+
   return (
-    <div className="informacion-general">
-      <h2 className="informacion-titulo">Politicas de privacidad</h2>
-      <div className="informacion-caja">
-        <p className="informacion-contenido">{informacion || 'Cargando...'}</p>
-      </div>
+    <div>
+      <h1>{politica.titulo}</h1>
+      <p>{politica.contenido}</p>
+      <p><strong>Fecha de Creación:</strong> {new Date(politica.fecha_vigencia).toLocaleDateString()}</p>
     </div>
   );
-};
+}
 
-export default InformacionGeneral;
+export default Politicas;

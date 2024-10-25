@@ -1,94 +1,10 @@
-.perfil-empresa-container {
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .informacion-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  .informacion-table th,
-  .informacion-table td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
-  }
-  
-  .informacion-table th {
-    background-color: #273746 ;
-    color: white;
-    position: sticky;
-    top: 0; /* Para mantener el encabezado visible */
-    z-index: 10; /* Para asegurar que el encabezado se mantenga sobre otras filas */
-  }
-  
-
-  .input-informacion {
-    padding: 10px; 
-    border: 1px solid #808b96; 
-    border-radius: 4px; 
-    font-size: 16px; 
-    box-sizing: border-box;
-    height: 100%;
-    width: 100%;
-  }
-  
-  .btn_borrar{
-    padding: 8px 12px;
-    margin: 0 5px;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    background-color: #922b21 ;
-  }
-
-  .btn_guardar{
-    padding: 8px 12px;
-    margin: 0 5px;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    background-color: #0b5345;
-  }
-
-  .btn_edit{
-    padding: 8px 12px;
-    margin: 0 5px;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    background-color: rgb(56, 66, 247);
-  }
-  
-  .informacion-table tr:hover {
-    background-color: #3f84e517;
-  }
-  
-  @media (max-width: 768px) {
-    .informacion-table {
-      display: block;
-      overflow-x: auto;
-    }
-  
-    .informacion-table th,
-    .informacion-table td {
-      white-space: nowrap;
-    }
-  }
-  
-
+body {
+  background: linear-gradient(90deg, #123f6b, #41b2d9);
+}
 
 /* Roles.css */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  
+  font-family: Arial, sans-serif !important;
 }
 
 .roles-container {
@@ -101,7 +17,7 @@ body {
   margin: 10px;
   border-radius: 8px; /* Esquinas redondeadas */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
-  background-color: #fff; /* Fondo blanco */
+  background-color: #98acbc !important; /* Fondo blanco */
   padding: 20px;
 }
 
@@ -118,8 +34,8 @@ body {
 }
 
 .roles-row-header {
-  background-color: #007bff; /* Azul claro */
-  color: white;
+  background-color: #131313; /* Azul claro */
+  color: #fefefe;
 }
 
 .roles-th {
@@ -129,7 +45,7 @@ body {
 
 .roles-td {
   padding: 10px;
-  border-bottom: 1px solid #ddd; /* Línea separadora */
+  border-bottom: 1px solid #070707; /* Línea separadora */
 }
 
 .roles-paragraph {
@@ -137,7 +53,7 @@ body {
 }
 
 .roles-row:hover {
-  background-color: #f1f1f1; /* Color al pasar el ratón */
+  background-color: #37688f; /* Color al pasar el ratón */
 }
 
 .roles-options-cell {
@@ -157,7 +73,6 @@ body {
 .roles-button:hover {
   background-color: #218838; /* Verde oscuro al pasar el ratón */
 }
-
 
 .roles_opciones {
   padding: 8px;
@@ -183,4 +98,337 @@ body {
   padding: 8px;
   background-color: #fff;
   color: #333;
+}
+
+/* Estilos para el panel de productos */
+.panel-productos {
+  background-color: #f2f2f2;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Título principal del panel */
+.titulo-productos {
+  font-size: 2rem;
+  color: #333333;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* Descripción general */
+.descripcion-productos {
+  font-size: 1.2rem;
+  color: #666666;
+  margin-bottom: 30px;
+}
+
+/* Estilos para secciones del panel */
+.titulo-seccion-productos {
+  font-size: 1.5rem;
+  color: #4a4a4a;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.seccion-agregar-productos,
+.seccion-listado-productos {
+  margin-bottom: 40px;
+}
+
+/* Formulario para agregar productos */
+.formulario-productos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.label-productos {
+  font-size: 1rem;
+  color: #333333;
+}
+
+.input-productos {
+  padding: 10px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.boton-productos {
+  background-color: #4caf50;
+  color: #ffffff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+.boton-productos:hover {
+  background-color: #45a049;
+}
+
+/* Estilos para la tabla de productos */
+.tabla-productos {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.celda-productos {
+  padding: 10px;
+  border: 1px solid #dddddd;
+  text-align: left;
+}
+
+.boton-accion-productos {
+  background-color: #f44336;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.boton-accion-productos:hover {
+  background-color: #d32f2f;
+}
+
+/* Responsividad para Roles */
+@media (max-width: 768px) {
+  .roles-container {
+    flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+  }
+
+  .roles-tabla {
+    margin: 0 0 10px; /* Margen inferior para separar tablas */
+    padding: 15px;
+  }
+
+  .roles-header {
+    font-size: 1.2em; /* Tamaño de fuente más pequeño */
+  }
+
+  .roles-button {
+    padding: 8px 10px; /* Ajuste en padding */
+  }
+}
+
+@media (max-width: 480px) {
+  .roles-header {
+    font-size: 1em; /* Tamaño de fuente aún más pequeño */
+  }
+
+  .roles-button {
+    font-size: 0.8rem; /* Ajuste en tamaño de botón */
+  }
+}
+
+/* Responsividad para Productos */
+@media (max-width: 768px) {
+  .panel-productos {
+    padding: 15px;
+    max-width: 90%;
+  }
+
+  .titulo-productos {
+    font-size: 1.8rem;
+  }
+
+  .titulo-seccion-productos {
+    font-size: 1.3rem;
+  }
+
+  .boton-productos {
+    font-size: 0.9rem;
+  }
+
+  .tabla-productos {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .panel-productos {
+    padding: 10px;
+    max-width: 100%;
+  }
+
+  .titulo-productos {
+    font-size: 1.5rem;
+  }
+
+  .titulo-seccion-productos {
+    font-size: 1.2rem;
+  }
+
+  .boton-productos {
+    font-size: 0.8rem;
+  }
+
+  .tabla-productos {
+    font-size: 0.8rem;
+  }
+}
+
+/* Estilos personalizados para AdminPoliticas */
+.admin-politicas-contenedor {
+  padding: 20px;
+  background-color: #98acbc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo del formulario de nueva política */
+.admin-politicas-formulario {
+  margin-bottom: 20px;
+}
+
+.admin-politicas-formulario h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.admin-politicas-formulario input,
+.admin-politicas-formulario textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.admin-politicas-boton-crear {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.admin-politicas-boton-crear:hover {
+  background-color: #0056b3;
+}
+
+/* Estilos para la política vigente */
+.admin-politicas-vigente {
+  margin-bottom: 20px;
+  border: 1px solid #000000;
+  border-radius: 4px;
+  padding: 15px;
+  background-color: #3979e863;
+}
+
+.admin-politicas-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.admin-politicas-tabla th,
+.admin-politicas-tabla td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.imput_crud {
+  background-color: transparent;
+  border: 1px solid #000000 !important;
+  width: 80%;
+}
+
+.admin-politicas-tabla th {
+  background-color: #000000 !important;
+  color: white;
+}
+
+/* Estilos para las políticas anteriores */
+.admin-politicas-anteriores {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 15px;
+}
+
+/* Estilos para los botones en la tabla */
+.admin-politicas-boton {
+  background-color: #28a745;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.admin-politicas-boton-cancelar {
+  background-color: #dc3545;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+}
+
+.admin-politicas-boton-editar {
+  background-color: #ffc107;
+  color: black;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+}
+
+.admin-politicas-boton-eliminar {
+  background-color: #dc3545;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+}
+
+/* Responsividad para AdminPoliticas */
+@media (max-width: 768px) {
+  .admin-politicas-contenedor {
+    padding: 15px;
+  }
+
+  .admin-politicas-formulario input,
+  .admin-politicas-formulario textarea {
+    padding: 8px;
+  }
+
+  .admin-politicas-boton-crear {
+    padding: 8px 12px;
+  }
+
+  .admin-politicas-tabla th,
+  .admin-politicas-tabla td {
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-politicas-contenedor {
+    padding: 10px;
+  }
+
+  .admin-politicas-formulario input,
+  .admin-politicas-formulario textarea {
+    padding: 6px;
+  }
+
+  .admin-politicas-boton-crear {
+    padding: 6px 10px;
+  }
+
+  .admin-politicas-tabla th,
+  .admin-politicas-tabla td {
+    padding: 6px;
+  }
 }

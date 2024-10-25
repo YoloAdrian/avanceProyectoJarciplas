@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './stylos.css';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'; 
-import sha1 from 'sha1'; // Asegúrate de instalar esta librería
+import sha1 from 'sha1';
+import axios from 'axios';
 
 const Registro = () => {
   const [formulario, setFormulario] = useState({
@@ -16,19 +18,15 @@ const Registro = () => {
     confirmar_contraseña: '',
   });
 
-
-
   const [errores, setErrores] = useState({});
   const [errorContraseña, setErrorContraseña] = useState('');
-  const [errorInput, setErrorInput] = useState('');
   const [mostrarContraseña, setMostrarContraseña] = useState(false);
   const [mostrarConfirmarContraseña, setMostrarConfirmarContraseña] = useState(false);
   const [fuerzaContraseña, setFuerzaContraseña] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMensaje, setModalMensaje] = useState('');
   const [mensajeContraseña, setMensajeContraseña] = useState('');
-
-
+  const navigate = useNavigate();
 
   const manejarCambio = (e) => {
     const { name, value } = e.target;
@@ -37,19 +35,12 @@ const Registro = () => {
     if (name === 'contraseña') {
       const fuerza = evaluarFuerzaContraseña(value);
       setFuerzaContraseña(fuerza);
-
-
       
-      // Actualizar mensaje de contraseña
-      if (fuerza === 0) {
-        setMensajeContraseña('Contraseña muy débil. Evita patrones comunes o secuencias.');
-      } else if (fuerza <= 2) {
-        setMensajeContraseña('Contraseña débil.');
-      } else if (fuerza === 3) {
-        setMensajeContraseña('Contraseña moderada.');
-      } else if (fuerza === 4) {
-        setMensajeContraseña('Contraseña fuerte.');
-      }
+      setMensajeContraseña(
+        fuerza === 0 ? 'Contraseña muy débil. Evita patrones comunes o secuencias.' :
+        fuerza <= 2 ? 'Contraseña débil.' :
+        fuerza === 3 ? 'Contraseña moderada.' : 'Contraseña fuerte.'
+      );
     }
 
     if (name !== 'genero' && !validarEntrada(name, value)) {
@@ -60,19 +51,14 @@ const Registro = () => {
       setErrores(nuevosErrores);
     }
 
-    // Validar que el campo de género tenga un valor seleccionado
-    if (name === 'genero') {
-      if (value === '') {
-        setErrores((prev) => ({ ...prev, genero: 'Por favor, seleccione un género.' }));
-      } else {
-        const nuevosErrores = { ...errores };
-        delete nuevosErrores.genero;
-        setErrores(nuevosErrores);
-      }
+    if (name === 'genero' && value === '') {
+      setErrores((prev) => ({ ...prev, genero: 'Por favor, seleccione un género.' }));
+    } else if (name === 'genero') {
+      const nuevosErrores = { ...errores };
+      delete nuevosErrores.genero;
+      setErrores(nuevosErrores);
     }
   };
-
-  
 
   const validarEntrada = (campo, valor) => {
     const regexValidos = {
@@ -83,80 +69,36 @@ const Registro = () => {
       telefono: /^[0-9]{10}$/, 
       edad: /^[0-9]+$/, 
       contraseña: /^[\w@#%&*+=-]{8,20}$/,
-      confirmar_contraseña: /^[\w@#%&*+=-]{8,20}$/,
+      confirmar_contraseña: /^[\w@#%$&*+=-]{8,20}$/,
     };
 
     return regexValidos[campo]?.test(valor);
   };
 
-  const validarCampo = (nombre, valor) => {
-    let erroresActualizados = { ...errores };
-  
-    if (nombre === 'nombre' || nombre === 'apellido_paterno' || nombre === 'apellido_materno') {
-      if (!/^[a-zA-Z\s]+$/.test(valor)) {
-        erroresActualizados[nombre] = 'Solo se permiten letras.';
-      } else {
-        delete erroresActualizados[nombre];
-      }
-    }
-  
-    if (nombre === 'telefono') {
-      if (!/^\d+$/.test(valor)) {
-        erroresActualizados[nombre] = 'Solo se permiten números.';
-      } else {
-        delete erroresActualizados[nombre];
-      }
-    }
-  
-    setErrores(erroresActualizados);
-  };
-
-  
-
   const evaluarFuerzaContraseña = (contraseña) => {
     let fuerza = 0;
 
-    
     const patronesComunes = ['12345', 'password', 'abcdef', 'qwerty'];
-    const tienePatronComun = patronesComunes.some((patron) =>
-      contraseña.toLowerCase().includes(patron)
-    );
-
-    if (tienePatronComun) return 0;
-
-    // Verificar secuencias prohibidas
+    if (patronesComunes.some((patron) => contraseña.toLowerCase().includes(patron))) return 0;
     if (contieneSecuencia(contraseña)) return 0;
 
-    // Verificar longitud mínima
     if (contraseña.length >= 12) fuerza += 1;
-
-    // Verificar complejidad
-    if (/[A-Z]/.test(contraseña)) fuerza += 1; 
+    if (/[A-Z]/.test(contraseña)) fuerza += 1;
     if (/[a-z]/.test(contraseña)) fuerza += 1;
     if (/\d/.test(contraseña)) fuerza += 1;
-    if (/[^A-Za-z0-9]/.test(contraseña)) fuerza += 1; 
+    if (/[^A-Za-z0-9]/.test(contraseña)) fuerza += 1;
 
     return fuerza;
   };
 
   const contieneSecuencia = (contraseña) => {
-    
-    const secuenciasAlfabeticas = [
-      'abcdefghijklmnopqrstuvwxyz',
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-      '0123456789'
-    ];
-
-    for (let i = 0; i < secuenciasAlfabeticas.length; i++) {
-      for (let j = 0; j < secuenciasAlfabeticas[i].length - 2; j++) {
-        const secuencia = secuenciasAlfabeticas[i].slice(j, j + 3);
-        if (contraseña.includes(secuencia) || contraseña.includes(secuencia.split('').reverse().join(''))) {
-          return true; 
-        }
-      }
-    }
-
-    return false; 
+    const secuenciasAlfabeticas = ['abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '0123456789'];
+    return secuenciasAlfabeticas.some((seq) =>
+      [...Array(seq.length - 2)].some((_, i) => {
+        const secuencia = seq.slice(i, i + 3);
+        return contraseña.includes(secuencia) || contraseña.includes(secuencia.split('').reverse().join(''));
+      })
+    );
   };
 
   const verificarContraseñaFiltrada = async (contraseña) => {
@@ -167,41 +109,35 @@ const Registro = () => {
     try {
       const respuesta = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
       const textoRespuesta = await respuesta.text();
-      const haSidoFiltrada = textoRespuesta.split('\n').some((linea) => {
+      return textoRespuesta.split('\n').some((linea) => {
         const [hashSuffix] = linea.split(':');
         return hashSuffix.toLowerCase() === suffix.toLowerCase();
       });
-
-      return haSidoFiltrada;
     } catch (error) {
       console.error('Error al verificar contraseña filtrada:', error);
       return false;
     }
   };
 
-  
-
   const manejarGuardar = async (e) => {
     e.preventDefault();
-
-    if (Object.keys(errores).length > 0) {
-      // Construir un mensaje con los errores
-      const mensajesErrores = Object.entries(errores)
-          .map(([campo, mensaje]) => `${campo}: ${mensaje}`)
-          .join('\n');
   
-      setModalMensaje(`Error: algunos campos son incorrectos`);
+    if (Object.keys(errores).length > 0) {
+      const mensajesErrores = Object.entries(errores)
+        .map(([campo, mensaje]) => `${campo}: ${mensaje}`)
+        .join('\n');
+  
+      setModalMensaje(`Error: algunos campos son incorrectos:\n${mensajesErrores}`);
       setModalVisible(true);
       return;
-  }
+    }
   
     if (formulario.contraseña !== formulario.confirmar_contraseña) {
       setErrorContraseña('Las contraseñas no coinciden');
       return;
     }
   
-    const haSidoFiltrada = await verificarContraseñaFiltrada(formulario.contraseña);
-    if (haSidoFiltrada) {
+    if (await verificarContraseñaFiltrada(formulario.contraseña)) {
       setErrorContraseña('Esta contraseña no es segura. Elige otra.');
       return;
     }
@@ -221,29 +157,15 @@ const Registro = () => {
     };
   
     try {
-      const respuesta = await fetch('http://localhost:3001/api/usuarios', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(datosUsuario),
-      });
-  
-      if (!respuesta.ok) {
-        throw new Error('Error al guardar el usuario');
-      }
-  
-      const nuevoUsuario = await respuesta.json();
-      console.log('Usuario guardado:', nuevoUsuario);
-      setModalMensaje('Usuario guardado exitosamente.');
+      await CodigoGmail(formulario.correo); 
+      navigate('/Verificar', { state: { datosUsuario } });
     } catch (error) {
       console.error('Error en la solicitud:', error);
-      setModalMensaje('Error al guardar el usuario. Intente de nuevo.');
+      setModalMensaje('Error al enviar el código de verificación. Intente de nuevo.');
     } finally {
-      setModalVisible(true); // Mostrar el modal
+      setModalVisible(true);
     }
-  
-    // Restablecer el formulario
+    
     setFormulario({
       nombre: '',
       apellido_paterno: '',
@@ -259,6 +181,23 @@ const Registro = () => {
     setMensajeContraseña('');
   };
   
+  const CodigoGmail = async (email) => {
+    try {
+      const response = await axios.post('https://backendjarciplas.onrender.com/api/enviar-codigo', {
+        email,
+        datosUsuario: formulario,
+      });
+
+      if (response.status === 200) {
+        console.log('Código enviado exitosamente:', response.data.message);
+      } else {
+        throw new Error('Error al enviar el código');
+      }
+    } catch (error) {
+      console.error('Error al enviar el correo:', error);
+      throw new Error('No se pudo enviar el código de verificación. Intenta de nuevo.');
+    }
+  };
 
   const manejarCancelar = () => {
     setFormulario({
@@ -288,11 +227,10 @@ const Registro = () => {
       </div>
     );
   };
-  
 
   return (
-    <form className="formulario-usuario" onSubmit={manejarGuardar} autoComplete="off">
-      <div className="formulario-campo">
+    <form className="formulario-usuario" onSubmit={manejarGuardar} >
+            <div className="formulario-campo">
         <label>Nombre:</label>
         <input
           className="input-texto"
@@ -446,10 +384,10 @@ const Registro = () => {
       {errorContraseña && <p className="error">{errorContraseña}</p>}
       
       <div className="formulario-botones">
-        <button type="submit" className="btn_guardar">Registrarse</button>
-        <button type="button" className="btn_cancelar" onClick={manejarCancelar}>Cancelar</button>
-        <Modal visible={modalVisible} mensaje={modalMensaje} onClose={() => setModalVisible(false)} />
-      </div>
+        <button type="submit" className="btn_gdr">Registrarse</button>
+        <button type="button" className="btn_cnl" onClick={manejarCancelar}>Cancelar</button>
+       </div>
+      <Modal visible={modalVisible} mensaje={modalMensaje} onClose={() => setModalVisible(false)} />
     </form>
   );
 };
